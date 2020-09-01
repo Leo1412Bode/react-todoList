@@ -10,9 +10,9 @@ import TodoList from "./components/TodoList";
 class App extends Component {
   state = {
     items: [
-      { id: 1, title: "wake up" },
+      /*   { id: 1, title: "wake up" },
       { id: 2, title: "make breakfast" },
-      { id: 3, title: "wake up" },
+      { id: 3, title: "wake up" }, */
     ],
     id: uuid(),
     item: "",
@@ -20,34 +20,61 @@ class App extends Component {
   };
 
   handleChange = (e) => {
-    console.log("handleChange");
+    this.setState({
+      item: e.target.value,
+    });
   };
 
   handleSubmit = (e) => {
-    console.log("handleSubmit");
+    e.preventDefault();
+    const newItem = {
+      id: this.state.id,
+      title: this.state.item,
+    };
+
+    /*    const updateItems = [];
+updateItems.push(newItem); */
+    const updateItems = [...this.state.items, newItem];
+
+    this.setState({
+      items: updateItems,
+      item: "",
+      id: uuid(),
+      editItem: false,
+    });
   };
 
   clearList = () => {
-    console.log("clear list");
+    const array = [];
+    this.setState({
+      items: array,
+    });
   };
 
   handleDelete = (id) => {
-    console.log("handleDelete " + { id });
+    const filterItem = this.state.items.filter((item) => item.id !== id);
+    this.setState({
+      items: filterItem,
+    });
   };
 
   handleEdit = (id) => {
-    console.log("handleEdit " + { id });
+    const filterItem = this.state.items.filter((item) => item.id !== id);
+    const selectedItem = this.state.items.find((item) => item.id === id);
+    this.setState({
+      items: filterItem,
+      item: selectedItem.title,
+      id:id,
+      editItem : true
+    });
   };
 
   render() {
-    console.log(this.state);
     return (
-      <div>
-        <div className="container">
-          <div className="row">
-            <div className="col-10 mx-auto col-md-8 mt-5">
-              <h3 className="text-capitalize text-center">Todo Input</h3>
-            </div>
+      <div className="container">
+        <div className="row">
+          <div className="col-10 mx-auto col-md-8 mt-5">
+            <h3 className="text-capitalize text-center">todo input</h3>
             <TodoInput
               item={this.state.item}
               handleChange={this.handleChange}
@@ -56,6 +83,7 @@ class App extends Component {
             />
             <TodoList
               items={this.state.items}
+              clearList={this.clearList}
               handleDelete={this.handleDelete}
               handleEdit={this.handleEdit}
             />
